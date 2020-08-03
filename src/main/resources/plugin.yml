@@ -1,0 +1,6 @@
+name: Discord
+version: "1.0-SNAPSHOT"
+main: com.github.patrick.discord.plugin.DiscordPlugin
+api-version: "1.13"
+depend: [Kotlin]
+load: STARTUP
