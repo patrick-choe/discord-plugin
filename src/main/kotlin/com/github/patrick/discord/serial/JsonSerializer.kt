@@ -28,64 +28,67 @@ import com.google.gson.JsonPrimitive
 
 fun heartbeat(): String {
     val sequence = CLIENT.sequence
-    return JsonObject().apply {
-        add("op", 1.json())
-        add("d", sequence?.json() ?: JsonNull.INSTANCE)
-    }.toString()
+    return json {
+        it["op"] = 1
+        it["d"] = sequence
+    }
 }
 
 fun identify(): String {
     return json {
-        add("op", 2.json())
-        add("d", json {
-            add("token", TOKEN.json())
-            add("properties", json {
-                add("\$os", "windows".json())
-                add("\$browser", "minecraft".json())
-                add("\$device", "minecraft".json())
-            })
-            add("presence", json {
-                add("game", json {
-                    add("name", "Minecraft".json())
-                    add("type", 2.json())
-                })
-                add("status", "online".json())
-                add("afk", false.json())
-            })
-            add("intents", 512.json())
-        })
-    }.toString()
-}
-
-fun createEmbed(content: String, author: String): String {
-    return json {
-        add("embed", json {
-            add("author", json {
-                add("name", author.json())
-            })
-            add("description", content.json())
-            add("color", 5592575.json())
-            add("footer", json {
-                add("text", "from Minecraft".json())
-            })
-        })
-    }.toString()
-}
-
-private fun json(unit: JsonObject.() -> Unit): JsonObject {
-    return JsonObject().apply {
-        unit()
+        it["op"] = 2
+        it["d"] = { data ->
+            data["token"] = TOKEN
+            data["properties"] = { properties ->
+                properties["\$os"] = "windows"
+                properties["\$browser"] = "minecraft"
+                properties["\$device"] = "minecraft"
+            }
+            data["presence"] = { presence ->
+                presence["game"] = { game ->
+                    game["name"] = "Minecraft"
+                    game["type"] = 2
+                }
+                presence["status"] = "online"
+                presence["afk"] = false
+            }
+            data["intents"] = 512
+        }
     }
 }
 
-private fun String.json(): JsonPrimitive {
-    return JsonPrimitive(this)
+fun createEmbed(content: String, name: String): String {
+    return json {
+        it["embed"] = { embed ->
+            embed["author"] = { author ->
+                author["name"] = name
+            }
+            embed["description"] = content
+            embed["color"] = 5592575
+            embed["footer"] = { footer ->
+                footer["text"] = "from Minecraft"
+
+            }
+        }
+    }
 }
 
-private fun Number.json(): JsonPrimitive {
-    return JsonPrimitive(this)
+private fun json(value: (JsonObject) -> Unit): String {
+    return JsonObject().apply(value).toString()
 }
 
-private fun Boolean.json(): JsonPrimitive {
-    return JsonPrimitive(this)
+private operator fun JsonObject.set(property: String, value: String?) {
+    add(property, if (value == null) JsonNull.INSTANCE else JsonPrimitive(value))
+}
+
+private operator fun JsonObject.set(property: String, value: Number?) {
+    add(property, if (value == null) JsonNull.INSTANCE else JsonPrimitive(value))
+}
+
+private operator fun JsonObject.set(property: String, value: Boolean?) {
+    add(property, if (value == null) JsonNull.INSTANCE else JsonPrimitive(value))
+}
+
+private operator fun JsonObject.set(property: String, value: (JsonObject) -> Unit) {
+    add(property, JsonObject().apply(value))
 }
