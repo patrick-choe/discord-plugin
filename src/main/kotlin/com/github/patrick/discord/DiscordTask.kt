@@ -23,7 +23,5 @@ package com.github.patrick.discord
 import java.util.TimerTask
 
 class DiscordTask(private val unit: () -> Unit) : TimerTask() {
-    override fun run() {
-        unit()
-    }
+    override fun run() = unit()
 }

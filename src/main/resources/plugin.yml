@@ -1,5 +1,5 @@
 name: Discord
-version: "1.0-SNAPSHOT"
+version: "1.0"
 main: com.github.patrick.discord.plugin.DiscordPlugin
 api-version: "1.13"
 depend: [Kotlin]

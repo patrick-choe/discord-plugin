@@ -4,7 +4,7 @@
 
 A discord plugin using [nv-websocket-client](https://github.com/TakahikoKawasaki/nv-websocket-client)
 
-Latest Version: 1.0-SNAPSHOT (Aug 03, 2020)
+Latest Version: 1.0 (Aug 27, 2020)
 
 ## Features
 
